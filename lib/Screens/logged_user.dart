@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class LoggedUser extends StatefulWidget {
@@ -20,6 +21,7 @@ class LoggedUserState extends State<LoggedUser> {
   TimeOfDay selectedTime = TimeOfDay.now();
   bool showDate = true;
 
+  XFile? imageFile;
   List<PlatformFile> files = [];
 
   @override
@@ -100,10 +102,39 @@ class LoggedUserState extends State<LoggedUser> {
                   alignment: Alignment.center,
                   child: ElevatedButton(
                     onPressed: () async {
-                      final result = await FilePicker.platform.pickFiles();
-                      if (result == null) return;
-                      files = result.files;
-                      setState(() {});
+                      // final result = await FilePicker.platform.pickFiles();
+                      // if (result == null) return;
+                      // files = result.files;
+                      // setState(() {});
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (context) {
+                            return Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    onPressed: () async {
+                                      var file = await ImagePicker().pickImage(
+                                          source: ImageSource.camera);
+                                      imageFile = file;
+                                      setState(() {});
+                                    },
+                                    icon: Icon(Icons.camera),
+                                  ),
+                                  IconButton(
+                                    onPressed: () async {
+                                      var file = await ImagePicker().pickImage(
+                                          source: ImageSource.gallery);
+                                      imageFile = file;
+                                      setState(() {});
+                                    },
+                                    icon: Icon(Icons.browse_gallery),
+                                  ),
+                                ],
+                              ),
+                            );
+                          });
                     },
                     child: Text('Upload Foto'),
                   ),
